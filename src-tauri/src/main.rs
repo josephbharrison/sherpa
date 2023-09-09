@@ -32,18 +32,18 @@ async fn main() -> Result<()> {
 	tauri::Builder::default()
 		.manage(model_manager)
 		.invoke_handler(tauri::generate_handler![
-			// Project
-			ipc::get_project,
-			ipc::create_project,
-			ipc::update_project,
-			ipc::delete_project,
-			ipc::list_projects,
-			// Task
-			ipc::get_task,
-			ipc::create_task,
-			ipc::update_task,
-			ipc::delete_task,
-			ipc::list_tasks,
+			// System
+			ipc::get_system,
+			ipc::create_system,
+			ipc::update_system,
+			ipc::delete_system,
+			ipc::list_systems,
+			// Station
+			ipc::get_station,
+			ipc::create_station,
+			ipc::update_station,
+			ipc::delete_station,
+			ipc::list_stations,
 		])
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");

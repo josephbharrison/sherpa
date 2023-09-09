@@ -1,4 +1,4 @@
-//! All model and controller for the Project type
+//! All model and controller for the System type
 //!
 use super::bmc_base::{bmc_create, bmc_delete, bmc_get, bmc_list, bmc_update};
 use super::store::{Creatable, Filterable, Patchable};
@@ -15,42 +15,42 @@ use std::sync::Arc;
 use surrealdb::sql::{Object, Value};
 use ts_rs::TS;
 
-// region:    --- Project
+// region:    --- System
 
 #[derive(Serialize, TS, Debug)]
 #[ts(export, export_to = "../src-ui/src/bindings/")]
-pub struct Project {
+pub struct System {
 	pub id: String,
 	pub name: String,
 	pub ctime: String,
 }
 
-impl TryFrom<Object> for Project {
+impl TryFrom<Object> for System {
 	type Error = Error;
-	fn try_from(mut val: Object) -> Result<Project> {
-		let project = Project {
+	fn try_from(mut val: Object) -> Result<System> {
+		let system = System {
 			id: val.x_take_val("id")?,
 			name: val.x_take_val("name")?,
 			ctime: val.x_take_val::<i64>("ctime")?.to_string(),
 		};
 
-		Ok(project)
+		Ok(system)
 	}
 }
 
-// endregion: --- Project
+// endregion: --- System
 
-// region:    --- ProjectForCreate
+// region:    --- SystemForCreate
 
 #[skip_serializing_none]
 #[derive(Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src-ui/src/bindings/")]
-pub struct ProjectForCreate {
+pub struct SystemForCreate {
 	pub name: String,
 }
 
-impl From<ProjectForCreate> for Value {
-	fn from(val: ProjectForCreate) -> Self {
+impl From<SystemForCreate> for Value {
+	fn from(val: SystemForCreate) -> Self {
 		BTreeMap::from([
 			// Note: could have used map![.. => ..] as well
 			("name".into(), val.name.into()),
@@ -59,21 +59,21 @@ impl From<ProjectForCreate> for Value {
 	}
 }
 
-impl Creatable for ProjectForCreate {}
+impl Creatable for SystemForCreate {}
 
-// endregion: --- ProjectForCreate
+// endregion: --- SystemForCreate
 
-// region:    --- ProjectForUpdate
+// region:    --- SystemForUpdate
 
 #[skip_serializing_none]
 #[derive(Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src-ui/src/bindings/")]
-pub struct ProjectForUpdate {
+pub struct SystemForUpdate {
 	pub name: Option<String>,
 }
 
-impl From<ProjectForUpdate> for Value {
-	fn from(val: ProjectForUpdate) -> Self {
+impl From<SystemForUpdate> for Value {
+	fn from(val: SystemForUpdate) -> Self {
 		let mut data = BTreeMap::new();
 		if let Some(name) = val.name {
 			data.insert("name".into(), name.into());
@@ -82,41 +82,41 @@ impl From<ProjectForUpdate> for Value {
 	}
 }
 
-impl Patchable for ProjectForUpdate {}
+impl Patchable for SystemForUpdate {}
 
-// endregion: --- ProjectForUpdate
+// endregion: --- SystemForUpdate
 
-// region:    --- ProjectFilter
+// region:    --- SystemFilter
 
 #[derive(FilterNodes, Deserialize, Debug)]
-pub struct ProjectFilter {
+pub struct SystemFilter {
 	pub id: Option<OpValsString>,
 	pub name: Option<OpValsString>,
 }
 
-impl Filterable for ProjectFilter {}
+impl Filterable for SystemFilter {}
 
-// endregion: --- ProjectFilter
+// endregion: --- SystemFilter
 
-// region:    --- ProjectBmc
+// region:    --- SystemBmc
 
-pub struct ProjectBmc;
+pub struct SystemBmc;
 
-impl ProjectBmc {
-	const ENTITY: &'static str = "project";
+impl SystemBmc {
+	const ENTITY: &'static str = "system";
 
-	pub async fn get(ctx: Arc<Ctx>, id: &str) -> Result<Project> {
+	pub async fn get(ctx: Arc<Ctx>, id: &str) -> Result<System> {
 		bmc_get(ctx, Self::ENTITY, id).await
 	}
 
-	pub async fn create(ctx: Arc<Ctx>, data: ProjectForCreate) -> Result<ModelMutateResultData> {
+	pub async fn create(ctx: Arc<Ctx>, data: SystemForCreate) -> Result<ModelMutateResultData> {
 		bmc_create(ctx, Self::ENTITY, data).await
 	}
 
 	pub async fn update(
 		ctx: Arc<Ctx>,
 		id: &str,
-		data: ProjectForUpdate,
+		data: SystemForUpdate,
 	) -> Result<ModelMutateResultData> {
 		bmc_update(ctx, Self::ENTITY, id, data).await
 	}
@@ -125,9 +125,9 @@ impl ProjectBmc {
 		bmc_delete(ctx, Self::ENTITY, id).await
 	}
 
-	pub async fn list(ctx: Arc<Ctx>, filter: Option<ProjectFilter>) -> Result<Vec<Project>> {
+	pub async fn list(ctx: Arc<Ctx>, filter: Option<SystemFilter>) -> Result<Vec<System>> {
 		bmc_list(ctx, Self::ENTITY, filter, ListOptions::default()).await
 	}
 }
 
-// endregion: --- ProjectBmc
+// endregion: --- SystemBmc

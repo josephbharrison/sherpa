@@ -16,55 +16,55 @@ use std::sync::Arc;
 use surrealdb::sql::{Object, Value};
 use ts_rs::TS;
 
-// region:    --- Task
+// region:    --- Station
 
 #[skip_serializing_none]
 #[derive(Serialize, TS, Debug)]
 #[ts(export, export_to = "../src-ui/src/bindings/")]
-pub struct Task {
+pub struct Station {
 	pub id: String,
 	pub ctime: String,
-	pub project_id: String,
+	pub system_id: String,
 
 	pub done: bool,
 	pub title: String,
 	pub desc: Option<String>,
 }
 
-impl TryFrom<Object> for Task {
+impl TryFrom<Object> for Station {
 	type Error = Error;
-	fn try_from(mut val: Object) -> Result<Task> {
-		let task = Task {
+	fn try_from(mut val: Object) -> Result<Station> {
+		let station = Station {
 			id: val.x_take_val("id")?,
 			ctime: val.x_take_val::<i64>("ctime")?.to_string(),
-			project_id: val.x_take_val("project_id")?,
+			system_id: val.x_take_val("system_id")?,
 			done: val.x_take_val("done")?,
 			title: val.x_take_val("title")?,
 			desc: val.x_take("desc")?,
 		};
 
-		Ok(task)
+		Ok(station)
 	}
 }
 
-// endregion: --- Task
+// endregion: --- Station
 
-// region:    --- TaskForCreate
+// region:    --- StationForCreate
 
 #[skip_serializing_none]
 #[derive(Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src-ui/src/bindings/")]
-pub struct TaskForCreate {
-	pub project_id: String,
+pub struct StationForCreate {
+	pub system_id: String,
 	pub title: String,
 	pub done: Option<bool>,
 	pub desc: Option<String>,
 }
 
-impl From<TaskForCreate> for Value {
-	fn from(val: TaskForCreate) -> Self {
+impl From<StationForCreate> for Value {
+	fn from(val: StationForCreate) -> Self {
 		let mut data = map![
-			"project_id".into() => val.project_id.into(),
+			"system_id".into() => val.system_id.into(),
 			"title".into() => val.title.into(),
 		];
 
@@ -78,23 +78,23 @@ impl From<TaskForCreate> for Value {
 	}
 }
 
-impl Creatable for TaskForCreate {}
+impl Creatable for StationForCreate {}
 
-// endregion: --- TaskForCreate
+// endregion: --- StationForCreate
 
-// region:    --- TaskForUpdate
+// region:    --- StationForUpdate
 
 #[skip_serializing_none]
 #[derive(Deserialize, TS, Debug)]
 #[ts(export, export_to = "../src-ui/src/bindings/")]
-pub struct TaskForUpdate {
+pub struct StationForUpdate {
 	pub title: Option<String>,
 	pub done: Option<bool>,
 	pub desc: Option<String>,
 }
 
-impl From<TaskForUpdate> for Value {
-	fn from(val: TaskForUpdate) -> Self {
+impl From<StationForUpdate> for Value {
+	fn from(val: StationForUpdate) -> Self {
 		let mut data = BTreeMap::new();
 		if let Some(title) = val.title {
 			data.insert("title".into(), title.into());
@@ -109,41 +109,41 @@ impl From<TaskForUpdate> for Value {
 	}
 }
 
-impl Patchable for TaskForUpdate {}
+impl Patchable for StationForUpdate {}
 
-// endregion: --- TaskForUpdate
+// endregion: --- StationForUpdate
 
-// region:    --- TaskFilter
+// region:    --- StationFilter
 
 #[derive(FilterNodes, Deserialize, Debug)]
-pub struct TaskFilter {
-	pub project_id: Option<OpValsString>,
+pub struct StationFilter {
+	pub system_id: Option<OpValsString>,
 	pub title: Option<OpValsString>,
 }
 
-impl Filterable for TaskFilter {}
+impl Filterable for StationFilter {}
 
-// endregion: --- TaskFilter
+// endregion: --- StationFilter
 
-// region:    --- TaskBmc
+// region:    --- StationBmc
 
-pub struct TaskBmc;
+pub struct StationBmc;
 
-impl TaskBmc {
-	const ENTITY: &'static str = "task";
+impl StationBmc {
+	const ENTITY: &'static str = "station";
 
-	pub async fn get(ctx: Arc<Ctx>, id: &str) -> Result<Task> {
-		bmc_get::<Task>(ctx, Self::ENTITY, id).await
+	pub async fn get(ctx: Arc<Ctx>, id: &str) -> Result<Station> {
+		bmc_get::<Station>(ctx, Self::ENTITY, id).await
 	}
 
-	pub async fn create(ctx: Arc<Ctx>, data: TaskForCreate) -> Result<ModelMutateResultData> {
+	pub async fn create(ctx: Arc<Ctx>, data: StationForCreate) -> Result<ModelMutateResultData> {
 		bmc_create(ctx, Self::ENTITY, data).await
 	}
 
 	pub async fn update(
 		ctx: Arc<Ctx>,
 		id: &str,
-		data: TaskForUpdate,
+		data: StationForUpdate,
 	) -> Result<ModelMutateResultData> {
 		bmc_update(ctx, Self::ENTITY, id, data).await
 	}
@@ -152,7 +152,7 @@ impl TaskBmc {
 		bmc_delete(ctx, Self::ENTITY, id).await
 	}
 
-	pub async fn list(ctx: Arc<Ctx>, filter: Option<TaskFilter>) -> Result<Vec<Task>> {
+	pub async fn list(ctx: Arc<Ctx>, filter: Option<StationFilter>) -> Result<Vec<Station>> {
 		let opts = ListOptions {
 			limit: None,
 			offset: None,
@@ -162,4 +162,4 @@ impl TaskBmc {
 	}
 }
 
-// endregion: --- TaskBmc
+// endregion: --- StationBmc

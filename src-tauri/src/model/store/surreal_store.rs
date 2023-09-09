@@ -170,15 +170,15 @@ mod tests {
 	}
 
 	#[derive(Debug, FilterNodes)]
-	struct ProjectFilter {
+	struct SystemFilter {
 		pub id: Option<OpValsInt64>,
 		pub name: Option<OpValsString>,
 		pub some_other: Option<OpValsString>,
 	}
 
 	#[derive(Debug, FilterNodes)]
-	struct TaskFilter {
-		pub project_id: Option<OpValsString>,
+	struct StationFilter {
+		pub system_id: Option<OpValsString>,
 		pub title: Option<OpValsString>,
 		pub done: Option<OpValsBool>,
 		pub desc: Option<OpValsString>,
@@ -186,7 +186,7 @@ mod tests {
 
 	#[test]
 	fn test_surreal_build_select_query() -> anyhow::Result<()> {
-		let filter = ProjectFilter {
+		let filter = SystemFilter {
 			id: Some(OpValInt64::Lt(1).into()),
 			name: Some(OpValString::Eq("Hello".to_string()).into()),
 			some_other: None,
@@ -194,7 +194,7 @@ mod tests {
 		let filter_nodes: Vec<FilterNode> = filter.try_into()?;
 
 		let (sql, vars) = super::build_select_query(
-			"project",
+			"system",
 			Some(filter_nodes.into()),
 			ListOptions::default(),
 		)?;
@@ -209,44 +209,44 @@ mod tests {
 	}
 
 	#[tokio::test]
-	async fn test_surreal_simple_project_select() -> anyhow::Result<()> {
+	async fn test_surreal_simple_system_select() -> anyhow::Result<()> {
 		// --- FIXTURE
 		let model_manager = get_shared_test_store().await;
-		let filter = ProjectFilter {
+		let filter = SystemFilter {
 			id: None,
-			name: Some(OpValString::Eq("Project A".to_string()).into()),
+			name: Some(OpValString::Eq("System A".to_string()).into()),
 			some_other: None,
 		};
 
 		// --- EXEC
 		let mut rs = model_manager
 			.store()
-			.exec_select("project", Some(filter), ListOptions::default())
+			.exec_select("system", Some(filter), ListOptions::default())
 			.await?;
 
 		// --- CHECKS
-		assert_eq!(rs.len(), 1, "number of projects returned");
+		assert_eq!(rs.len(), 1, "number of systems returned");
 		let mut obj = rs.pop().unwrap();
-		assert_eq!(obj.x_take::<String>("name")?.unwrap(), "Project A");
+		assert_eq!(obj.x_take::<String>("name")?.unwrap(), "System A");
 
 		Ok(())
 	}
 
 	#[tokio::test]
-	async fn test_surreal_simple_task_select() -> anyhow::Result<()> {
+	async fn test_surreal_simple_station_select() -> anyhow::Result<()> {
 		// --- FIXTURE
 		let model_manager = get_shared_test_store().await;
 
-		// get the "Project A" project_id
-		let project_filter_node = FilterNode::from(("name", "Project A"));
+		// get the "System A" system_id
+		let system_filter_node = FilterNode::from(("name", "System A"));
 		let mut rs = model_manager
 			.store()
-			.exec_select("project", Some(project_filter_node), ListOptions::default())
+			.exec_select("system", Some(system_filter_node), ListOptions::default())
 			.await?;
-		let project_id = rs.pop().unwrap().x_take_val::<String>("id")?;
+		let system_id = rs.pop().unwrap().x_take_val::<String>("id")?;
 
-		let filter = TaskFilter {
-			project_id: Some(OpValString::from(project_id).into()),
+		let filter = StationFilter {
+			system_id: Some(OpValString::from(system_id).into()),
 			title: None,
 			done: Some(OpValBool::Eq(true).into()),
 			desc: None,
@@ -255,14 +255,14 @@ mod tests {
 		// --- EXEC
 		let rs = model_manager
 			.store()
-			.exec_select("task", Some(filter), ListOptions::default())
+			.exec_select("station", Some(filter), ListOptions::default())
 			.await?;
 
 		// --- CHECKS
 		assert_eq!(
 			rs.len(),
 			100,
-			"Result length (for Project A & done: true tasks"
+			"Result length (for System A & done: true stations"
 		);
 
 		Ok(())
@@ -278,7 +278,7 @@ mod tests {
 		let mut rs = model_manager
 			.store()
 			.exec_select(
-				"task",
+				"station",
 				Some(filter_node),
 				ListOptions {
 					order_bys: Some("title".into()),
@@ -289,11 +289,11 @@ mod tests {
 
 		// --- CHECK
 		assert_eq!(
-			"Task B.200",
+			"Station B.200",
 			rs.pop().unwrap().x_take_val::<String>("title")?
 		);
 		assert_eq!(
-			"Task A.200",
+			"Station A.200",
 			rs.pop().unwrap().x_take_val::<String>("title")?
 		);
 
@@ -304,16 +304,16 @@ mod tests {
 	async fn test_surreal_select_starts_with() -> anyhow::Result<()> {
 		// --- FIXTURE
 		let model_manager = get_shared_test_store().await;
-		let filter_node = FilterNode::from(("title", OpValString::StartsWith("Task A.1".into())));
+		let filter_node = FilterNode::from(("title", OpValString::StartsWith("Station A.1".into())));
 
 		// --- EXEC
 		let rs = model_manager
 			.store()
-			.exec_select("task", Some(filter_node), ListOptions::default())
+			.exec_select("station", Some(filter_node), ListOptions::default())
 			.await?;
 
 		// --- CHECK
-		assert_eq!(rs.len(), 111, "Number of tasks starting with 'Task A.1'");
+		assert_eq!(rs.len(), 111, "Number of stations starting with 'Station A.1'");
 
 		Ok(())
 	}
@@ -327,11 +327,11 @@ mod tests {
 		// --- EXEC
 		let rs = model_manager
 			.store()
-			.exec_select("task", Some(filter_node), ListOptions::default())
+			.exec_select("station", Some(filter_node), ListOptions::default())
 			.await?;
 
 		// --- CHECK
-		assert_eq!(rs.len(), 4, "Number of tasks ending with '11'");
+		assert_eq!(rs.len(), 4, "Number of stations ending with '11'");
 
 		Ok(())
 	}
@@ -353,14 +353,14 @@ mod tests {
 		let rs = model_manager
 			.store()
 			.exec_select(
-				"task",
+				"station",
 				Some(vec![filter_nodes_1, filter_nodes_2]),
 				ListOptions::default(),
 			)
 			.await?;
 
 		// --- CHECK
-		assert_eq!(rs.len(), 8, "Number of tasks ending with '11' OR '22'");
+		assert_eq!(rs.len(), 8, "Number of stations ending with '11' OR '22'");
 
 		Ok(())
 	}
@@ -387,14 +387,14 @@ mod tests {
 		let rs = model_manager
 			.store()
 			.exec_select(
-				"task",
+				"station",
 				Some(vec![filter_nodes_1, filter_nodes_2]),
 				list_options,
 			)
 			.await?;
 
 		// --- CHECK
-		assert_eq!(rs.len(), 8, "Number of tasks ending with '11' OR '22'");
+		assert_eq!(rs.len(), 8, "Number of stations ending with '11' OR '22'");
 		// TODO: Need to check the order
 
 		// for mut obj in rs.into_iter() {
@@ -431,22 +431,22 @@ mod tests {
 		let mut rs = model_manager
 			.store()
 			.exec_select(
-				"task",
+				"station",
 				Some(vec![filter_nodes_1, filter_nodes_2]),
 				list_options,
 			)
 			.await?;
 
 		// --- CHECK
-		assert_eq!(rs.len(), 2, "Number of tasks when Limit = 2");
-		// Check tasks
+		assert_eq!(rs.len(), 2, "Number of stations when Limit = 2");
+		// Check stations
 		// Note: This will reverse order checked as we are usin pop.
 		assert_eq!(
-			"Task B.11",
+			"Station B.11",
 			rs.pop().unwrap().x_take_val::<String>("title")?
 		);
 		assert_eq!(
-			"Task A.111",
+			"Station A.111",
 			rs.pop().unwrap().x_take_val::<String>("title")?
 		);
 

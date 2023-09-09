@@ -1,60 +1,60 @@
-//! Tauri IPC commands to bridge Task Frontend Model Controller to Backend Model Controller
+//! Tauri IPC commands to bridge Station Frontend Model Controller to Backend Model Controller
 //!
 
 use crate::ctx::Ctx;
 use crate::ipc::{CreateParams, DeleteParams, GetParams, IpcResponse, ListParams, UpdateParams};
-use crate::model::{ModelMutateResultData, Task, TaskBmc, TaskForCreate, TaskForUpdate};
+use crate::model::{ModelMutateResultData, Station, StationBmc, StationForCreate, StationForUpdate};
 use crate::Error;
 use serde_json::Value;
 use tauri::{command, AppHandle, Wry};
 
 #[command]
-pub async fn get_task(app: AppHandle<Wry>, params: GetParams) -> IpcResponse<Task> {
+pub async fn get_station(app: AppHandle<Wry>, params: GetParams) -> IpcResponse<Station> {
 	match Ctx::from_app(app) {
-		Ok(ctx) => TaskBmc::get(ctx, &params.id).await.into(),
+		Ok(ctx) => StationBmc::get(ctx, &params.id).await.into(),
 		Err(_) => Err(Error::CtxFail).into(),
 	}
 }
 
 #[command]
-pub async fn create_task(
+pub async fn create_station(
 	app: AppHandle<Wry>,
-	params: CreateParams<TaskForCreate>,
+	params: CreateParams<StationForCreate>,
 ) -> IpcResponse<ModelMutateResultData> {
 	match Ctx::from_app(app) {
-		Ok(ctx) => TaskBmc::create(ctx, params.data).await.into(),
+		Ok(ctx) => StationBmc::create(ctx, params.data).await.into(),
 		Err(_) => Err(Error::CtxFail).into(),
 	}
 }
 
 #[command]
-pub async fn update_task(
+pub async fn update_station(
 	app: AppHandle<Wry>,
-	params: UpdateParams<TaskForUpdate>,
+	params: UpdateParams<StationForUpdate>,
 ) -> IpcResponse<ModelMutateResultData> {
 	match Ctx::from_app(app) {
-		Ok(ctx) => TaskBmc::update(ctx, &params.id, params.data).await.into(),
+		Ok(ctx) => StationBmc::update(ctx, &params.id, params.data).await.into(),
 		Err(_) => Err(Error::CtxFail).into(),
 	}
 }
 
 #[command]
-pub async fn delete_task(
+pub async fn delete_station(
 	app: AppHandle<Wry>,
 	params: DeleteParams,
 ) -> IpcResponse<ModelMutateResultData> {
 	match Ctx::from_app(app) {
-		Ok(ctx) => TaskBmc::delete(ctx, &params.id).await.into(),
+		Ok(ctx) => StationBmc::delete(ctx, &params.id).await.into(),
 		Err(_) => Err(Error::CtxFail).into(),
 	}
 }
 
 #[command]
-pub async fn list_tasks(app: AppHandle<Wry>, params: ListParams<Value>) -> IpcResponse<Vec<Task>> {
+pub async fn list_stations(app: AppHandle<Wry>, params: ListParams<Value>) -> IpcResponse<Vec<Station>> {
 	// TODO: Needs to make error handling simpler (use ? rather than all into())
 	match Ctx::from_app(app) {
 		Ok(ctx) => match params.filter.map(serde_json::from_value).transpose() {
-			Ok(filter) => TaskBmc::list(ctx, filter).await.into(),
+			Ok(filter) => StationBmc::list(ctx, filter).await.into(),
 			Err(err) => Err(Error::JsonSerde(err)).into(),
 		},
 		Err(_) => Err(Error::CtxFail).into(),
