@@ -3,6 +3,6 @@
 export interface StationForCreate {
     system_id: string;
     title: string;
-    done?: boolean;
+    visible?: boolean;
     desc?: string;
 }

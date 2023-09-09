@@ -16,10 +16,10 @@ const HTML = html`
         <h1></h1>
         <d-input
             class="new-station"
-            placeholder="Enter new station (press enter)"
+            placeholder="Add Station (ENTER)"
         ></d-input>
     </header>
-    <d-input class="search-station" placeholder="Search your station"></d-input>
+    <d-input class="search-station" placeholder="Search Star System"></d-input>
     <section></section>
 `;
 

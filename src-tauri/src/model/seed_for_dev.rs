@@ -22,12 +22,12 @@ pub async fn seed_store_for_dev(model_manager: Arc<ModelStore>) -> Result<()> {
 			.await?;
 
 		for i in 1..=200 {
-			let done = i % 2 == 0;
+			let visible = i % 2 == 0;
 			let station = StationForCreate {
 				system_id: system_id.clone(),
 				title: format!("Station {k}.{i}"),
 				desc: None,
-				done: Some(done),
+				visible: Some(visible),
 			};
 
 			model_manager

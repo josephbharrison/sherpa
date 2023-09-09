@@ -26,7 +26,7 @@ pub struct Station {
 	pub ctime: String,
 	pub system_id: String,
 
-	pub done: bool,
+	pub visible: bool,
 	pub title: String,
 	pub desc: Option<String>,
 }
@@ -38,7 +38,7 @@ impl TryFrom<Object> for Station {
 			id: val.x_take_val("id")?,
 			ctime: val.x_take_val::<i64>("ctime")?.to_string(),
 			system_id: val.x_take_val("system_id")?,
-			done: val.x_take_val("done")?,
+			visible: val.x_take_val("visible")?,
 			title: val.x_take_val("title")?,
 			desc: val.x_take("desc")?,
 		};
@@ -57,7 +57,7 @@ impl TryFrom<Object> for Station {
 pub struct StationForCreate {
 	pub system_id: String,
 	pub title: String,
-	pub done: Option<bool>,
+	pub visible: Option<bool>,
 	pub desc: Option<String>,
 }
 
@@ -68,8 +68,8 @@ impl From<StationForCreate> for Value {
 			"title".into() => val.title.into(),
 		];
 
-		// default for done is false
-		data.insert("done".into(), val.done.unwrap_or(false).into());
+		// default for visible is true
+		data.insert("visible".into(), val.visible.unwrap_or(true).into());
 
 		if let Some(desc) = val.desc {
 			data.insert("desc".into(), desc.into());
@@ -89,7 +89,7 @@ impl Creatable for StationForCreate {}
 #[ts(export, export_to = "../src-ui/src/bindings/")]
 pub struct StationForUpdate {
 	pub title: Option<String>,
-	pub done: Option<bool>,
+	pub visible: Option<bool>,
 	pub desc: Option<String>,
 }
 
@@ -99,8 +99,8 @@ impl From<StationForUpdate> for Value {
 		if let Some(title) = val.title {
 			data.insert("title".into(), title.into());
 		}
-		if let Some(done) = val.done {
-			data.insert("done".into(), done.into());
+		if let Some(visible) = val.visible {
+			data.insert("visible".into(), visible.into());
 		}
 		if let Some(desc) = val.desc {
 			data.insert("desc".into(), desc.into());

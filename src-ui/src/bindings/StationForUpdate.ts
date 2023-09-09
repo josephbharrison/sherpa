@@ -2,6 +2,6 @@
 
 export interface StationForUpdate {
     title?: string;
-    done?: boolean;
+    visible?: boolean;
     desc?: string;
 }

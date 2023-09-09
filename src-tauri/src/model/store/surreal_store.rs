@@ -180,7 +180,7 @@ mod tests {
 	struct StationFilter {
 		pub system_id: Option<OpValsString>,
 		pub title: Option<OpValsString>,
-		pub done: Option<OpValsBool>,
+		pub visible: Option<OpValsBool>,
 		pub desc: Option<OpValsString>,
 	}
 
@@ -248,7 +248,7 @@ mod tests {
 		let filter = StationFilter {
 			system_id: Some(OpValString::from(system_id).into()),
 			title: None,
-			done: Some(OpValBool::Eq(true).into()),
+			visible: Some(OpValBool::Eq(true).into()),
 			desc: None,
 		};
 
@@ -262,7 +262,7 @@ mod tests {
 		assert_eq!(
 			rs.len(),
 			100,
-			"Result length (for System A & done: true stations"
+			"Result length (for System A & visible: true stations"
 		);
 
 		Ok(())
@@ -379,7 +379,7 @@ mod tests {
 		))];
 
 		let list_options = ListOptions {
-			order_bys: Some(vec!["done", "!title"].into()),
+			order_bys: Some(vec!["visible", "!title"].into()),
 			..Default::default()
 		};
 
@@ -401,7 +401,7 @@ mod tests {
 		// 	println!(
 		// 		"{:?} {:?}",
 		// 		obj.x_take_val::<String>("title")?,
-		// 		obj.x_take_val::<bool>("done")?
+		// 		obj.x_take_val::<bool>("visible")?
 		// 	);
 		// }
 
@@ -422,7 +422,7 @@ mod tests {
 		))];
 
 		let list_options = ListOptions {
-			order_bys: Some(vec!["done", "title"].into()),
+			order_bys: Some(vec!["visible", "title"].into()),
 			limit: Some(2),
 			offset: Some(1),
 		};
@@ -455,7 +455,7 @@ mod tests {
 		// 	println!(
 		// 		"{:?} {:?}",
 		// 		obj.x_take_val::<String>("title")?,
-		// 		obj.x_take_val::<bool>("done")?
+		// 		obj.x_take_val::<bool>("visible")?
 		// 	);
 		// }
 

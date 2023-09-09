@@ -22,14 +22,14 @@ import { classable } from '../utils.js';
 const TASK_HEADER = html`
     <div class="th">Title</div>
     <div class="th">Info</div>
-    <div class="th done">Done</div>
+    <div class="th visible">Visible</div>
     <div class="th more">&nbsp;</div>
 `;
 
 const TASK_ROW_HTML = html`
     <span class="title"></span>
     <span class="info"></span>
-    <d-check class="done"></d-check>
+    <d-check class="visible"></d-check>
     <d-ico class="show-more" name="ico-more"></d-ico>
 `;
 
@@ -105,7 +105,7 @@ export class StationsDataTable extends BaseHTMLElement {
         const station = showMoreEl.closest('station-row')!.station;
 
         const options = {
-            toggle: station.done ? 'Mark Undone' : 'Mark Done',
+            toggle: station.visible ? 'Mark Invisible' : 'Mark Visible',
             delete: elem('label', {
                 class: 'delete',
                 $: { textContent: 'Delete' },
@@ -119,7 +119,7 @@ export class StationsDataTable extends BaseHTMLElement {
             if (evt.detail == 'delete') {
                 stationFmc.delete(station.id);
             } else if (evt.detail == 'toggle') {
-                stationFmc.update(station.id, { done: !station.done });
+                stationFmc.update(station.id, { visible: !station.visible });
             }
         });
         position(menuEl, showMoreEl, { refPos: 'BR', pos: 'BL', gap: 4 });
@@ -129,12 +129,12 @@ export class StationsDataTable extends BaseHTMLElement {
     onStationCheckClick(evt: OnEvent<{ value: boolean }>) {
         let stationEl = evt.selectTarget.closest('station-row')!;
         let station_id = stationEl.station.id;
-        let newDone = evt.detail.value;
+        let newVisible = evt.detail.value;
 
         // Make sure to avoid infine loop
         // (will get this event when changed by other mean as well)
-        if (newDone !== stationEl.station.done) {
-            stationFmc.update(station_id, { done: evt.detail.value });
+        if (newVisible !== stationEl.station.visible) {
+            stationFmc.update(station_id, { visible: evt.detail.value });
         }
     }
     // #endregion --- UI Events
@@ -220,7 +220,7 @@ export class StationRow extends BaseHTMLElement {
         // if ready to be injected, we do the job
         if (newStation && this.#titleEl != null) {
             this.classList.add(`${classable(newStation.id)}`);
-            this.#checkEl.checked = newStation.done;
+            this.#checkEl.checked = newStation.visible;
 
             this.#titleEl.textContent = newStation.title;
             let info = newStation.ctime;

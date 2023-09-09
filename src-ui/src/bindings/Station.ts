@@ -4,7 +4,7 @@ export interface Station {
     id: string;
     ctime: string;
     system_id: string;
-    done: boolean;
+    visible: boolean;
     title: string;
     desc?: string;
 }
