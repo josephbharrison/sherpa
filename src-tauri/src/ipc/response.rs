@@ -1,3 +1,5 @@
+// ipc/response.rs
+//
 //! Here we are following a "JSON-RPC 2.0" styleesponse with error or result.
 //!
 //! Notes:

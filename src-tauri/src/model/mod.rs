@@ -1,3 +1,5 @@
+// model/mod.rs
+//
 //! model module and sub-modules contain all of the model types and
 //! backend model controllers for the application.
 //!

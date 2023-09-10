@@ -37,4 +37,8 @@ report.*.json
 *.icns
 *.jpeg
 *.jpg
-*.icns
+*.icnsvenv/
+venv/
+auth_server.py
+auth_token.sh
+requirements.txt

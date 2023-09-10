@@ -1,3 +1,5 @@
+// error.rs
+//
 //! This is the main (and only for now) application Error type.
 //! It's using 'thiserror' as it reduces boilerplate error code while providing rich error typing.
 //!

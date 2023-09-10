@@ -1,3 +1,5 @@
+// model/store/mod.rs
+//
 use modql::filter::IntoFilterNodes;
 use surrealdb::sql::Value;
 

@@ -1,3 +1,5 @@
+// ipc/station.rs
+//
 //! Tauri IPC commands to bridge Station Frontend Model Controller to Backend Model Controller
 //!
 

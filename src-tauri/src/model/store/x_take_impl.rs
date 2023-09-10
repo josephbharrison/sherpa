@@ -1,3 +1,5 @@
+// model/store/x_take_impl.rs
+//
 //! XTakeImpl implementations for the surrealdb Object types.
 //!
 //! Note: Implement the `XTakeImpl' trait on objects, will provide the

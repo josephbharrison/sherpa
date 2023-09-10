@@ -1,3 +1,5 @@
+// ipc/mod.rs
+//
 //! `ipc` module and sub-modules are all Rust constructs necessary for the WebView to Rust Tauri IPC calls.
 //!
 //! At a high level it follows the "JSON-RPC 2.0" format

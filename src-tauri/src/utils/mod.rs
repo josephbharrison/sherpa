@@ -1,3 +1,5 @@
+// util/mod.rs
+//
 //! Application wide utilities. Most will be re-exported.
 //!
 

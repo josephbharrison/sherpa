@@ -1,3 +1,5 @@
+// event.rs
+//
 //! Event layer of the backend.
 //!
 //! Right now, very simple, just a HubEvent data type.

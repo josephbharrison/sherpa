@@ -1,3 +1,5 @@
+// ipc/system.rs
+//
 //! Tauri IPC commands to bridge System Frontend Model Controller to Backend Model Controller
 //!
 

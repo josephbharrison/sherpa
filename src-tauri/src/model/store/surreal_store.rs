@@ -1,3 +1,5 @@
+// model/store/surreal_store.rs
+//
 //! Small store layer to talk to the SurrealDB.
 //!
 //! This module is to narrow and normalize the surrealdb API surface

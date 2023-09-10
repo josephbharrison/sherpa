@@ -1,3 +1,5 @@
+// ipc/params.rs
+//
 //! Params types used in the IPC methods.
 //!
 //! The current best practice is to follow a single argument type, called "params" for all method (JSON-RPC's style).

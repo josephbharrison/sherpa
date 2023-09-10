@@ -1,3 +1,5 @@
+// model/system.rs
+//
 //! All model and controller for the System type
 //!
 use super::bmc_base::{bmc_create, bmc_delete, bmc_get, bmc_list, bmc_update};

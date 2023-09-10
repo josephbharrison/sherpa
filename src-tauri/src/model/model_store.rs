@@ -1,3 +1,5 @@
+// model/model_store.rs
+//
 //! ModelStore is just a Store wrapper so that Store does not have to be exposed outside the model module tree.
 //!
 //! This pattern allows to:
