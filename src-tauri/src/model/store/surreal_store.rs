@@ -28,7 +28,7 @@ pub(in crate::model) struct SurrealStore {
 
 impl SurrealStore {
 	pub(in crate::model) async fn new() -> Result<Self> {
-		let ds = Datastore::new("memory").await?;
+		let ds = Datastore::new("file://../../sherpa.db").await?;
 		let ses = Session::for_db("appns", "appdb");
 		Ok(SurrealStore { ds, ses })
 	}
@@ -195,11 +195,8 @@ mod tests {
 		};
 		let filter_nodes: Vec<FilterNode> = filter.try_into()?;
 
-		let (sql, vars) = super::build_select_query(
-			"system",
-			Some(filter_nodes.into()),
-			ListOptions::default(),
-		)?;
+		let (sql, vars) =
+			super::build_select_query("system", Some(filter_nodes.into()), ListOptions::default())?;
 
 		assert!(sql.contains("id <"), "should contain id <");
 		assert!(sql.contains("name ="), "should contain name =");
@@ -306,7 +303,8 @@ mod tests {
 	async fn test_surreal_select_starts_with() -> anyhow::Result<()> {
 		// --- FIXTURE
 		let model_manager = get_shared_test_store().await;
-		let filter_node = FilterNode::from(("title", OpValString::StartsWith("Station A.1".into())));
+		let filter_node =
+			FilterNode::from(("title", OpValString::StartsWith("Station A.1".into())));
 
 		// --- EXEC
 		let rs = model_manager
@@ -315,7 +313,11 @@ mod tests {
 			.await?;
 
 		// --- CHECK
-		assert_eq!(rs.len(), 111, "Number of stations starting with 'Station A.1'");
+		assert_eq!(
+			rs.len(),
+			111,
+			"Number of stations starting with 'Station A.1'"
+		);
 
 		Ok(())
 	}

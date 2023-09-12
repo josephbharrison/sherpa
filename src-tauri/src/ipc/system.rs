@@ -5,9 +5,7 @@
 
 use super::{CreateParams, DeleteParams, GetParams, IpcResponse, ListParams, UpdateParams};
 use crate::ctx::Ctx;
-use crate::model::{
-	ModelMutateResultData, System, SystemBmc, SystemForCreate, SystemForUpdate,
-};
+use crate::model::{ModelMutateResultData, System, SystemBmc, SystemForCreate, SystemForUpdate};
 use crate::Error;
 use serde_json::Value;
 use tauri::{command, AppHandle, Wry};
@@ -37,9 +35,7 @@ pub async fn update_system(
 	params: UpdateParams<SystemForUpdate>,
 ) -> IpcResponse<ModelMutateResultData> {
 	match Ctx::from_app(app) {
-		Ok(ctx) => SystemBmc::update(ctx, &params.id, params.data)
-			.await
-			.into(),
+		Ok(ctx) => SystemBmc::update(ctx, &params.id, params.data).await.into(),
 		Err(_) => Err(Error::CtxFail).into(),
 	}
 }

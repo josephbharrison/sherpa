@@ -5,7 +5,9 @@
 
 use crate::ctx::Ctx;
 use crate::ipc::{CreateParams, DeleteParams, GetParams, IpcResponse, ListParams, UpdateParams};
-use crate::model::{ModelMutateResultData, Station, StationBmc, StationForCreate, StationForUpdate};
+use crate::model::{
+	ModelMutateResultData, Station, StationBmc, StationForCreate, StationForUpdate,
+};
 use crate::Error;
 use serde_json::Value;
 use tauri::{command, AppHandle, Wry};
@@ -35,7 +37,9 @@ pub async fn update_station(
 	params: UpdateParams<StationForUpdate>,
 ) -> IpcResponse<ModelMutateResultData> {
 	match Ctx::from_app(app) {
-		Ok(ctx) => StationBmc::update(ctx, &params.id, params.data).await.into(),
+		Ok(ctx) => StationBmc::update(ctx, &params.id, params.data)
+			.await
+			.into(),
 		Err(_) => Err(Error::CtxFail).into(),
 	}
 }
@@ -52,7 +56,10 @@ pub async fn delete_station(
 }
 
 #[command]
-pub async fn list_stations(app: AppHandle<Wry>, params: ListParams<Value>) -> IpcResponse<Vec<Station>> {
+pub async fn list_stations(
+	app: AppHandle<Wry>,
+	params: ListParams<Value>,
+) -> IpcResponse<Vec<Station>> {
 	// TODO: Needs to make error handling simpler (use ? rather than all into())
 	match Ctx::from_app(app) {
 		Ok(ctx) => match params.filter.map(serde_json::from_value).transpose() {

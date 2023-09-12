@@ -14,12 +14,12 @@
 //!   - This module re-exports the appropriate sub-module constructs as their hierarchy is irrelevant to callers.
 
 mod params;
-mod system;
 mod response;
 mod station;
+mod system;
 
 // --- re-exports
 pub use params::*;
-pub use system::*;
 pub use response::*;
 pub use station::*;
+pub use system::*;

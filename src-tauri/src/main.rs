@@ -11,7 +11,8 @@
 pub use error::{Error, Result};
 
 // -- Imports
-use model::{seed_store_for_dev, ModelStore};
+// use model::{seed_store_for_dev, ModelStore};
+use model::ModelStore;
 use std::sync::Arc;
 
 // -- Sub-Modules
@@ -29,7 +30,7 @@ async fn main() -> Result<()> {
 	let model_manager = Arc::new(model_manager);
 
 	// for dev only
-	seed_store_for_dev(model_manager.clone()).await?;
+	// seed_store_for_dev(model_manager.clone()).await?;
 
 	tauri::Builder::default()
 		.manage(model_manager)
