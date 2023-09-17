@@ -28,7 +28,7 @@ pub(in crate::model) struct SurrealStore {
 
 impl SurrealStore {
 	pub(in crate::model) async fn new() -> Result<Self> {
-		let ds = Datastore::new("file://../../sherpa.db").await?;
+		let ds = Datastore::new("file:///Users/josephbharrison/sherpa.db").await?;
 		let ses = Session::for_db("appns", "appdb");
 		Ok(SurrealStore { ds, ses })
 	}
