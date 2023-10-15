@@ -161,10 +161,9 @@ mod tests {
 				// create and seed the store
 				let model_manager = ModelStore::new().await.unwrap();
 				let model_manager = Arc::new(model_manager);
-
-				crate::model::seed_store_for_dev(model_manager.clone())
-					.await
-					.unwrap();
+				// crate::model::seed_store_for_dev(model_manager.clone())
+				// 	.await
+				// 	.unwrap();
 				model_manager
 			})
 			.await

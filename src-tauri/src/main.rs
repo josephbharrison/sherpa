@@ -11,7 +11,6 @@
 pub use error::{Error, Result};
 
 // -- Imports
-// use model::{seed_store_for_dev, ModelStore};
 use model::ModelStore;
 use std::sync::Arc;
 
